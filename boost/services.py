@@ -86,13 +86,13 @@ class PayheroService:
                 auth = (self.username, self.password)
 
             payload = {
+                "amount": int(float(amount)),
                 "phone_number": phone_number,
-                "amount": amount,
-                "reference": reference,
-                "description": description,
-                "channel_id": self.channel_id,
+                "channel_id": int(self.channel_id) if str(self.channel_id).isdigit() else self.channel_id,
+                "provider": "m-pesa",
+                "external_reference": reference,
                 "callback_url": self.callback_url,
-                "provider": "safaricom",
+                "description": description,
             }
 
             response = requests.post(url, headers=headers, json=payload, auth=auth, timeout=30)
