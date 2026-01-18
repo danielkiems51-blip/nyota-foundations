@@ -92,6 +92,7 @@ class PayheroService:
                 "description": description,
                 "channel_id": self.channel_id,
                 "callback_url": self.callback_url,
+                "provider": "safaricom",
             }
 
             response = requests.post(url, headers=headers, json=payload, auth=auth, timeout=30)
