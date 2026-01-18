@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,70 +8,101 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --safaricom-green: #22c55e;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+        }
+
         body {
             font-family: 'Outfit', sans-serif;
-            background-color: #f8fafc;
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
         }
-        .safaricom-green { background-color: #009639; }
-        .safaricom-green-text { color: #009639; }
-        .glass-morphism {
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+
+        .safaricom-gradient {
+            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
         }
+
+        .glass-dark {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
         @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
         }
-        @keyframes fadeOut {
-            from { opacity: 1; }
-            to { opacity: 0; }
-        }
-        .toast-animation {
-            animation: slideIn 0.5s ease-out, fadeOut 0.5s ease-in 4.5s forwards;
-        }
+
         .limit-card.selected {
-            border-color: #009639;
-            background-color: #f0fdf4;
-            transform: scale(1.02);
+            border-color: var(--safaricom-green);
+            background-color: rgba(34, 197, 94, 0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(34, 197, 94, 0.2);
         }
+
         .modal-enter {
-            animation: scaleIn 0.3s ease-out;
+            animation: scaleIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
+
         @keyframes scaleIn {
-            from { transform: scale(0.95); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
+            from {
+                transform: scale(0.9) translateY(20px);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1) translateY(0);
+                opacity: 1;
+            }
+        }
+
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
         }
     </style>
     {% block extra_css %}{% endblock %}
 </head>
-<body class="bg-gray-50 text-gray-900">
-    <div class="max-w-md mx-auto min-h-screen relative flex flex-col">
+
+<body class="min-h-screen">
+    <div class="max-w-md mx-auto min-h-screen relative flex flex-col bg-[#0f172a] shadow-2xl shadow-black">
         <!-- Header -->
-        <header class="bg-white px-6 pt-8 pb-4 sticky top-0 z-10 border-b border-gray-100">
-            <div class="flex items-center justify-between mb-2">
-                <div class="w-12 h-12 flex items-center justify-center rounded-xl bg-green-50">
-                    <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+        <header class="px-6 pt-10 pb-6 sticky top-0 z-10 glass-dark border-b border-white/5">
+            <div class="flex items-center justify-between mb-4">
+                <div
+                    class="w-12 h-12 flex items-center justify-center rounded-2xl bg-gradient-to-br from-green-500/20 to-green-600/10 border border-green-500/20">
+                    <svg class="w-7 h-7 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                            d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                     </svg>
                 </div>
-                <div class="text-right">
-                    <span class="text-xs font-medium text-gray-500 uppercase tracking-widest">Safaricom</span>
+                <div class="px-3 py-1 rounded-full bg-white/5 border border-white/10">
+                    <span class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">Safaricom</span>
                 </div>
             </div>
-            <h1 class="text-2xl font-bold text-gray-800">Fuliza Limit Boost</h1>
-            <p class="text-sm text-gray-500">Increase your Fuliza limit instantly</p>
+            <h1 class="text-3xl font-extrabold text-white tracking-tight">Fuliza Boost</h1>
+            <p class="text-sm text-slate-400 font-medium mt-1">Instant limit increase via M-Pesa</p>
         </header>
 
         <!-- Main Content -->
-        <main class="flex-grow px-6 py-6 pb-24">
+        <main class="flex-grow px-6 py-8 pb-32">
             {% block content %}{% endblock %}
         </main>
-
-        <!-- Toast Notifications Container -->
-        <div id="toast-container" class="fixed top-4 right-4 left-4 z-50 pointer-events-none"></div>
     </div>
 
     {% block extra_js %}{% endblock %}
 </body>
+
 </html>
