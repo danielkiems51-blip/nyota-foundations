@@ -95,32 +95,21 @@
     <div class="max-w-md mx-auto min-h-screen relative flex flex-col bg-white shadow-xl">
         <!-- Header -->
         <header
-            class="px-6 pt-8 pb-4 sticky top-0 z-10 bg-white/80 backdrop-blur-md border-b border-gray-100 flex flex-col items-center">
-            <div class="w-full flex justify-between items-center mb-6">
-                <button class="p-2 -ml-2 text-gray-400">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-                    </svg>
-                </button>
-                <div class="flex items-center gap-1">
-                    <span class="text-xl font-bold text-gray-900">Fuliza increment</span>
-                </div>
-                <button class="p-2 -mr-2 text-gray-400">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
-                        </path>
-                    </svg>
-                </button>
+            class="px-6 pt-10 pb-6 sticky top-0 z-10 bg-white/90 backdrop-blur-lg border-b border-gray-100 flex flex-col items-center">
+
+            <div
+                class="px-4 py-1.5 rounded-full bg-green-50 border border-green-200/50 mb-6 flex items-center gap-2 shadow-sm">
+                <div class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
+                <span class="text-[10px] font-bold text-green-700 uppercase tracking-[0.25em]">Safaricom Official</span>
             </div>
 
-            <div class="flex flex-col items-center mb-2">
-                <img src="{% static 'img/Safari-png.png' %}" alt="Logo" class="w-12 h-auto mb-2">
-                <h1 class="text-3xl font-bold logo-text border-b-4 border-primary-green pb-1"
-                    style="border-color: #22c55e;">FulizaBoost</h1>
-                <p class="text-[11px] text-gray-500 font-medium mt-3 tracking-wide">Instant Limit Increase • No
-                    Paperwork • Same Day Access</p>
+            <div class="flex flex-col items-center">
+                <h1 class="text-4xl font-black logo-text tracking-tighter"
+                    style="background: linear-gradient(to bottom right, #15803d, #22c55e); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">
+                    FulizaBoost</h1>
+                <div class="h-1 w-12 bg-green-500 rounded-full mt-2 mb-4"></div>
+                <p class="text-[12px] text-slate-500 font-semibold tracking-wide text-center">Instant Limit Increase •
+                    Guaranteed Approval</p>
             </div>
         </header>
 
