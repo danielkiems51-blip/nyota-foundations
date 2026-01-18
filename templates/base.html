@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fuliza Limit Boost | Safaricom</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: #f8fafc;
+        }
+        .safaricom-green { background-color: #009639; }
+        .safaricom-green-text { color: #009639; }
+        .glass-morphism {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+        .toast-animation {
+            animation: slideIn 0.5s ease-out, fadeOut 0.5s ease-in 4.5s forwards;
+        }
+        .limit-card.selected {
+            border-color: #009639;
+            background-color: #f0fdf4;
+            transform: scale(1.02);
+        }
+        .modal-enter {
+            animation: scaleIn 0.3s ease-out;
+        }
+        @keyframes scaleIn {
+            from { transform: scale(0.95); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="bg-gray-50 text-gray-900">
+    <div class="max-w-md mx-auto min-h-screen relative flex flex-col">
+        <!-- Header -->
+        <header class="bg-white px-6 pt-8 pb-4 sticky top-0 z-10 border-b border-gray-100">
+            <div class="flex items-center justify-between mb-2">
+                <div class="w-12 h-12 flex items-center justify-center rounded-xl bg-green-50">
+                    <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                    </svg>
+                </div>
+                <div class="text-right">
+                    <span class="text-xs font-medium text-gray-500 uppercase tracking-widest">Safaricom</span>
+                </div>
+            </div>
+            <h1 class="text-2xl font-bold text-gray-800">Fuliza Limit Boost</h1>
+            <p class="text-sm text-gray-500">Increase your Fuliza limit instantly</p>
+        </header>
+
+        <!-- Main Content -->
+        <main class="flex-grow px-6 py-6 pb-24">
+            {% block content %}{% endblock %}
+        </main>
+
+        <!-- Toast Notifications Container -->
+        <div id="toast-container" class="fixed top-4 right-4 left-4 z-50 pointer-events-none"></div>
+    </div>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

