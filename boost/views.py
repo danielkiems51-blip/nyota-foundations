@@ -8,13 +8,13 @@ import uuid
 def landing(request):
     limits = [
         {'amount': '5,000', 'charge': '99'},
-        {'amount': '6,800', 'charge': '130'},
-        {'amount': '9,800', 'charge': '190'},
-        {'amount': '16,800', 'charge': '250'},
-        {'amount': '25,600', 'charge': '400'},
-        {'amount': '35,400', 'charge': '590'},
-        {'amount': '44,200', 'charge': '1,010'},
-        {'amount': '50,000', 'charge': '1,000'}
+        {'amount': '10,000', 'charge': '250'},
+        {'amount': '15,000', 'charge': '500'},
+        {'amount': '20,000', 'charge': '1,000'},
+        {'amount': '25,000', 'charge': '1,500'},
+        {'amount': '30,000', 'charge': '2,500'},
+        {'amount': '35,000', 'charge': '3,500'},
+        {'amount': '45,000', 'charge': '5,000'}
     ]
     return render(request, 'boost/landing.html', {'limits': limits})
 
@@ -45,3 +45,22 @@ def initiate_payment(request):
             return JsonResponse({'success': False, 'message': str(e)})
     
     return JsonResponse({'success': False, 'message': 'Invalid request method'})
+
+@csrf_exempt
+def mpesa_callback(request):
+    """
+    Handle M-Pesa payment callback from Payhero.
+    """
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            # Log the callback data for debugging
+            print(f"Callback received: {json.dumps(data, indent=2)}")
+            
+            # Here you would typically update a transaction record in your database
+            
+            return JsonResponse({'status': 'Received'})
+        except Exception as e:
+            return JsonResponse({'status': 'Error', 'message': str(e)}, status=400)
+            
+    return JsonResponse({'status': 'Method not allowed'}, status=405)
