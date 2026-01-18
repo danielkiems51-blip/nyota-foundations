@@ -20,6 +20,11 @@
         body {
             font-family: 'Outfit', sans-serif;
             background-color: #f1f5f9;
+            background-image:
+                radial-gradient(#22c55e 0.5px, transparent 0.5px),
+                linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            background-size: 20px 20px, 100% 100%;
+            background-attachment: fixed;
             color: var(--text-main);
         }
 
@@ -92,7 +97,8 @@
 </head>
 
 <body class="min-h-screen">
-    <div class="max-w-md mx-auto min-h-screen relative flex flex-col bg-white shadow-xl">
+    <div
+        class="max-w-md mx-auto min-h-screen relative flex flex-col bg-gradient-to-b from-white via-white to-green-50/30 shadow-xl">
         <!-- Header -->
         <header
             class="px-6 pt-10 pb-6 sticky top-0 z-10 bg-white/90 backdrop-blur-lg border-b border-gray-100 flex flex-col items-center">
@@ -141,8 +147,14 @@
             </div>
         </div>
 
+        <!-- Background Decorative Elements -->
+        <div class="absolute top-0 right-0 -tr-1/2 w-64 h-64 bg-green-500/5 rounded-full blur-3xl pointer-events-none">
+        </div>
+        <div class="absolute top-1/2 left-0 -tl-1/2 w-80 h-80 bg-green-500/5 rounded-full blur-3xl pointer-events-none">
+        </div>
+
         <!-- Main Content -->
-        <main class="flex-grow px-6 py-6 pb-24">
+        <main class="flex-grow px-6 py-6 pb-24 relative z-0">
             {% block content %}{% endblock %}
         </main>
     </div>
