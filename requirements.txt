@@ -1,0 +1,6 @@
+django
+requests
+gunicorn
+whitenoise[brotli]
+dj-database-url
+psycopg2-binary

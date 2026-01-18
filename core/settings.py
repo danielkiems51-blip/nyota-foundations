@@ -10,6 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+import os
+import dj_database_url
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -20,13 +22,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-y0^bt&to%0p7gt$k&$figfa=)4mgx7l)o7u^wz*&q9_$%0hop2'
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-y0^bt&to%0p7gt$k&$figfa=)4mgx7l)o7u^wz*&q9_$%0hop2')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = ['*']
-
 
 # Application definition
 
@@ -42,6 +43,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -74,10 +76,10 @@ WSGI_APPLICATION = 'core.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.config(
+        default=f'sqlite:///{BASE_DIR / "db.sqlite3"}',
+        conn_max_age=600
+    )
 }
 
 
@@ -119,15 +121,24 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
+# WhiteNoise compression and caching
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# CSRF Settings for Render
+CSRF_TRUSTED_ORIGINS = [
+    'https://*.render.com',
+    'https://starr-unbarbered-accusably.ngrok-free.dev'
+]
+
 # Payhero Settings
-PAYHERO_API_URL = 'https://backend.payhero.co.ke/api/v2/payments'
-PAYHERO_CHANNEL_ID = 'your_channel_id'
-PAYHERO_API_USERNAME = 'your_username'
-PAYHERO_API_PASSWORD = 'your_password'
-PAYHERO_CALLBACK_URL = 'https://starr-unbarbered-accusably.ngrok-free.dev/boost/callback/'
-BASIC_AUTH_TOKEN = '' # If using token instead of user/pass
+PAYHERO_API_URL = os.environ.get('PAYHERO_API_URL', 'https://backend.payhero.co.ke/api/v2/payments')
+PAYHERO_CHANNEL_ID = os.environ.get('PAYHERO_CHANNEL_ID', 'your_channel_id')
+PAYHERO_API_USERNAME = os.environ.get('PAYHERO_API_USERNAME', 'your_username')
+PAYHERO_API_PASSWORD = os.environ.get('PAYHERO_API_PASSWORD', 'your_password')
+PAYHERO_CALLBACK_URL = os.environ.get('PAYHERO_CALLBACK_URL', 'https://starr-unbarbered-accusably.ngrok-free.dev/boost/callback/')
+BASIC_AUTH_TOKEN = os.environ.get('BASIC_AUTH_TOKEN', '') # If using token instead of user/pass
