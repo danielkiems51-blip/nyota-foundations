@@ -73,7 +73,7 @@ class PayheroService:
             # Clean and normalize the phone number
             phone_number = self._normalize_phone(phone_number)
 
-            url = f"{self.api_url}/stk-push"
+            url = self.api_url
             
             headers = {
                 "Content-Type": "application/json",
