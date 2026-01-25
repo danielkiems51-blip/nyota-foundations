@@ -29,13 +29,13 @@ Paste your environment variables (copy from your local `.env`):
 ```text
 DEBUG=False
 SECRET_KEY=your-secret-key-here
-ALLOWED_HOSTS=fedhacred1t.pythonanywhere.com
-PYTHONANYWHERE_DOMAIN=fedhacred1t.pythonanywhere.com
+ALLOWED_HOSTS=FedhaCred1t.pythonanywhere.com
+PYTHONANYWHERE_DOMAIN=FedhaCred1t.pythonanywhere.com
 PAYHERO_API_URL=https://backend.payhero.co.ke/api/v2/payments
 PAYHERO_CHANNEL_ID=4144
 PAYHERO_API_USERNAME=your-username
 PAYHERO_API_PASSWORD=your-password
-PAYHERO_CALLBACK_URL=https://fedhacred1t.pythonanywhere.com/api/mpesa/callback/
+PAYHERO_CALLBACK_URL=https://FedhaCred1t.pythonanywhere.com/api/mpesa/callback/
 ```
 *Note: If you have a free account, PythonAnywhere might block the connection to `payhero.co.ke` unless you request it to be whitelisted.*
 
@@ -44,8 +44,8 @@ PAYHERO_CALLBACK_URL=https://fedhacred1t.pythonanywhere.com/api/mpesa/callback/
 2. Click **Add a new web app**.
 3. Select **Manual Configuration** (do NOT choose Django, we will configure the WSGI ourselves).
 4. Choose **Python 3.10**.
-5. Set the **Virtualenv** path: `/home/fedhacred1t/.virtualenvs/fuliza-venv`.
-6. Set the **Source Code** path: `/home/fedhacred1t/FulizaBoost`.
+5. Set the **Virtualenv** path: `/home/FedhaCred1t/.virtualenvs/fuliza-venv`.
+6. Set the **Source Code** path: `/home/FedhaCred1t/FulizaBoost`.
 
 ## 5. Configure WSGI File
 In the **Web** tab, click the link to your **WSGI configuration file**. Replace its entire content with this:
@@ -56,7 +56,7 @@ import sys
 from dotenv import load_dotenv
 
 # Path to your project
-path = '/home/fedhacred1t/FulizaBoost'
+path = '/home/FedhaCred1t/FulizaBoost'
 if path not in sys.path:
     sys.path.append(path)
 
@@ -73,7 +73,7 @@ application = get_wsgi_application()
 ## 6. Static Files
 In the **Web** tab, scroll down to the **Static files** section and add:
 - **URL:** `/static/`
-- **Path:** `/home/fedhacred1t/FulizaBoost/staticfiles`
+- **Path:** `/home/FedhaCred1t/FulizaBoost/staticfiles`
 
 Then run this in your console to collect the files:
 ```bash
@@ -87,7 +87,7 @@ python manage.py migrate
 ```
 
 ## 8. Final Step
-Go back to the **Web** tab and click **Reload**. Your site should now be live at `fedhacred1t.pythonanywhere.com`!
+Go back to the **Web** tab and click **Reload**. Your site should now be live at `FedhaCred1t.pythonanywhere.com`!
 
 ---
 
