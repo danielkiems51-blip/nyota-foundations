@@ -1,7 +1,6 @@
 Django>=5.0
 requests
 python-dotenv
-dj-database-url
 whitenoise
 gunicorn
-psycopg2-binary  # In case the user moves to Postgres later
+psycopg2-binary
