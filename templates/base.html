@@ -91,11 +91,91 @@
             -webkit-appearance: none;
             margin: 0;
         }
+
+        /* Splash Screen */
+        #splash-screen {
+            position: fixed;
+            inset: 0;
+            background: #ffffff;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.8s cubic-bezier(0.65, 0, 0.35, 1);
+        }
+
+        #splash-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-100%);
+        }
+
+        .splash-logo {
+            width: 260px;
+            height: auto;
+            animation: logo-entrance 1.2s ease-out forwards;
+        }
+
+        @keyframes logo-entrance {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .loading-bar-container {
+            width: 220px;
+            height: 6px;
+            background: #f8fafc;
+            border-radius: 99px;
+            overflow: hidden;
+            border: 1px solid #f1f5f9;
+            margin-top: 1.5rem;
+        }
+
+        .loading-bar-progress {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(to right, #000000, #bb0000, #006600);
+            animation: progress-fill 3.5s cubic-bezier(0.1, 0, 0.3, 1) forwards;
+        }
+
+        @keyframes progress-fill {
+            0% {
+                width: 0%;
+            }
+
+            30% {
+                width: 40%;
+            }
+
+            60% {
+                width: 70%;
+            }
+
+            100% {
+                width: 100%;
+            }
+        }
     </style>
     {% block extra_css %}{% endblock %}
 </head>
 
 <body class="min-h-screen">
+    <!-- Splash Screen -->
+    <div id="splash-screen">
+        <img src="{% static 'img/logo.png' %}" alt="Nyota Fund Logo" class="splash-logo">
+        <div class="loading-bar-container">
+            <div class="loading-bar-progress"></div>
+        </div>
+        <p class="mt-4 text-xs font-bold text-gray-400 uppercase tracking-widest animate-pulse">Initializing...</p>
+    </div>
     <div
         class="max-w-md mx-auto min-h-screen relative flex flex-col bg-gradient-to-b from-white via-white to-green-50/30 shadow-xl">
         <!-- Header -->
@@ -180,6 +260,19 @@
         setInterval(() => {
             if (Math.random() > 0.5) showRandomToast();
         }, 8000);
+
+        // Hide Splash Screen
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const splash = document.getElementById('splash-screen');
+                splash.classList.add('hidden');
+                // Allow scrolling after splash
+                document.body.style.overflow = 'auto';
+            }, 3000); // 3 seconds delay
+        });
+
+        // Prevent scrolling during splash
+        document.body.style.overflow = 'hidden';
     </script>
 </body>
 
