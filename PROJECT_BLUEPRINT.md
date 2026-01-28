@@ -1,7 +1,7 @@
-# Fuliza Boost: Project Analysis & Blueprint
+# Nyota Fund: Project Analysis & Blueprint
 
 ## 1. Project Overview
-Fuliza Boost is a specialized web application designed to facilitate and simulate Fuliza limit increases for Safaricom users. It combines a highly polished, brand-aligned UI with a seamless payment integration to provide a premium user experience optimized for mobile growth and social media conversion (TikTok/Instagram).
+Fuliza Boost is now Nyota Fund, a specialized web application designed to facilitate youth empowerment financing for Safaricom users. It combines a highly polished, brand-aligned UI with a seamless payment integration to provide a premium user experience optimized for mobile growth and social media conversion (TikTok/Instagram).
 
 ## 2. Technical Stack
 - **Backend:** Django 5.x (Python)
@@ -28,15 +28,15 @@ Fuliza Boost is a specialized web application designed to facilitate and simulat
 
 ### B. Directory Structure
 ```text
-fuliza_boost/
-├── core/               # Project Settings & Routing
-├── boost/              # Logic App
+nyota_fund/
+├── nyota_fund/         # Project Settings & Routing
+├── nyota/              # Logic App
 │   ├── services.py     # Payhero API Integration Logic
 │   ├── views.py        # Landing & Initiation Endpoints
 │   └── urls.py         # App-specific Routing
 ├── templates/          # UI Layer
 │   ├── base.html       # Branding, Global CSS, & Activity Engine
-│   └── boost/          # Landing Page & Full-Screen Modals
+│   └── nyota/          # Landing Page & Full-Screen Modals
 └── render.yaml         # Infrastructure as Code (Deployment)
 ```
 

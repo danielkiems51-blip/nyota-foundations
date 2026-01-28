@@ -1,4 +1,4 @@
-# Fuliza Boost Deployment Guide (Render.com)
+# Nyota Fund Deployment Guide (Render.com)
 
 Follow these steps to deploy your project to Render.
 
@@ -13,7 +13,7 @@ Follow these steps to deploy your project to Render.
 2.  Click **New +** and select **Blueprint**.
 3.  Connect your GitHub repository.
 4.  Render will automatically detect the `render.yaml` file and set up your:
-    *   **Web Service** (Fuliza Boost)
+    *   **Web Service** (Nyota Fund)
     *   **Environment Variables**
     *   **Build & Start Commands**
 

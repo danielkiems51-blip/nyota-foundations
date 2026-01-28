@@ -1,9 +1,9 @@
 services:
   - type: web
-    name: fuliza-boost
+    name: nyota-fund
     env: python
     buildCommand: ./build.sh
-    startCommand: gunicorn core.wsgi:application
+    startCommand: gunicorn nyota_fund.wsgi:application
     envVars:
       - key: PYTHON_VERSION
         value: 3.12.0

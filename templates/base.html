@@ -5,39 +5,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FulizaBoost | Instant Limit Increase</title>
+    <title>Nyota Fund KE | Youth Empowerment Financing</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-green: #22c55e;
-            --primary-hover: #16a34a;
-            --bg-light: #f8fafc;
+            --primary-green: #006600;
+            --primary-red: #bb0000;
+            --primary-black: #000000;
+            --bg-light: #ffffff;
             --text-main: #1e293b;
             --text-muted: #64748b;
         }
 
         body {
             font-family: 'Outfit', sans-serif;
-            background-color: #f1f5f9;
+            background-color: #f8f8f8;
             background-image:
-                radial-gradient(#22c55e 0.5px, transparent 0.5px),
-                linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+                radial-gradient(var(--primary-green) 0.5px, transparent 0.5px),
+                linear-gradient(135deg, #ffffff 0%, #f8f8f8 100%);
             background-size: 20px 20px, 100% 100%;
             background-attachment: fixed;
             color: var(--text-main);
         }
 
         .green-gradient-btn {
-            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+            background: linear-gradient(to right, #000000 0%, #bb0000 50%, #006600 100%);
         }
 
         .logo-text {
-            background: linear-gradient(to right, #22c55e, #22c55e);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-weight: 700;
+            color: #000000;
+            font-weight: 800;
+            text-transform: uppercase;
         }
 
         .toast-enter {
@@ -100,23 +99,8 @@
     <div
         class="max-w-md mx-auto min-h-screen relative flex flex-col bg-gradient-to-b from-white via-white to-green-50/30 shadow-xl">
         <!-- Header -->
-        <header
-            class="px-6 pt-10 pb-6 sticky top-0 z-10 bg-white/90 backdrop-blur-lg border-b border-gray-100 flex flex-col items-center">
-
-            <div
-                class="px-4 py-1.5 rounded-full bg-green-50 border border-green-200/50 mb-6 flex items-center gap-2 shadow-sm">
-                <div class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
-                <span class="text-[10px] font-bold text-green-700 uppercase tracking-[0.25em]">Safaricom Official</span>
-            </div>
-
-            <div class="flex flex-col items-center">
-                <h1 class="text-4xl font-black logo-text tracking-tighter"
-                    style="background: linear-gradient(to bottom right, #15803d, #22c55e); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">
-                    FulizaBoost</h1>
-                <div class="h-1 w-12 bg-green-500 rounded-full mt-2 mb-4"></div>
-                <p class="text-[12px] text-slate-500 font-semibold tracking-wide text-center">Instant Limit Increase •
-                    Guaranteed Approval</p>
-            </div>
+        <header class="px-6 py-4 sticky top-0 z-10 bg-white shadow-sm flex items-center justify-center">
+            <h1 class="text-xl font-bold logo-text tracking-tight">NYOTA FUND KE</h1>
         </header>
 
         <!-- Notification Bar (Optional consistent element) -->
@@ -141,8 +125,7 @@
                 </svg>
             </div>
             <div class="flex flex-col">
-                <p class="text-[11px] font-medium text-gray-800" id="toast-message">0719****77 increased to Ksh 8,000
-                </p>
+                <p class="text-[11px] font-medium text-gray-800" id="toast-message">0719****77 received Ksh 8,000
                 <p class="text-[10px] text-gray-400 mt-0.5">• just now</p>
             </div>
         </div>
@@ -183,7 +166,7 @@
             const amount = amounts[Math.floor(Math.random() * amounts.length)];
             const suffix = Math.floor(10 + Math.random() * 89);
 
-            message.innerText = `${prefix}****${suffix} increased to Ksh ${amount}`;
+            message.innerText = `${prefix}****${suffix} received Ksh ${amount}`;
 
             toast.classList.remove('opacity-0', 'translate-y-4');
             toast.classList.add('opacity-1', 'translate-y-0');

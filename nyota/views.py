@@ -16,7 +16,7 @@ def landing(request):
         {'amount': '35,000', 'charge': '3,500'},
         {'amount': '45,000', 'charge': '5,000'}
     ]
-    return render(request, 'boost/landing.html', {'limits': limits})
+    return render(request, 'nyota/landing.html', {'limits': limits})
 
 @csrf_exempt
 def initiate_payment(request):
@@ -30,7 +30,7 @@ def initiate_payment(request):
             amount = float(amount.replace(',', ''))
             
             reference = str(uuid.uuid4())[:8].upper()
-            description = f"Fuliza Boost Charge - {reference}"
+            description = f"Nyota Fund Charge - {reference}"
             
             payhero = PayheroService()
             result = payhero.initiate_stk_push(

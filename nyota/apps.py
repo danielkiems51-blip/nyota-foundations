@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class BoostConfig(AppConfig):
+class NyotaConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'boost'
+    name = 'nyota'
