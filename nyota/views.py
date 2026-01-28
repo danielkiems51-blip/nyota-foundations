@@ -7,14 +7,15 @@ import uuid
 
 def landing(request):
     limits = [
-        {'amount': '5,000', 'charge': '99'},
+        {'amount': '5,000', 'charge': '100'},
         {'amount': '10,000', 'charge': '250'},
         {'amount': '15,000', 'charge': '500'},
-        {'amount': '20,000', 'charge': '1,000'},
-        {'amount': '25,000', 'charge': '1,500'},
-        {'amount': '30,000', 'charge': '2,500'},
-        {'amount': '35,000', 'charge': '3,500'},
-        {'amount': '45,000', 'charge': '5,000'}
+        {'amount': '25,000', 'charge': '1,000'},
+        {'amount': '35,000', 'charge': '1,500'},
+        {'amount': '45,000', 'charge': '2,500'},
+        {'amount': '55,000', 'charge': '3,500'},
+        {'amount': '65,000', 'charge': '4,500'},
+        {'amount': '75,000', 'charge': '5,500'}
     ]
     return render(request, 'nyota/landing.html', {'limits': limits})
 
