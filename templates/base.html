@@ -111,10 +111,41 @@
             transform: translateY(-100%);
         }
 
-        .splash-logo {
-            width: 260px;
-            height: auto;
+        .splash-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             animation: logo-entrance 1.2s ease-out forwards;
+        }
+
+        .splash-star {
+            width: 80px;
+            height: 80px;
+            color: #FFD700;
+            /* Golden */
+            filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.4));
+            margin-bottom: 1rem;
+        }
+
+        .splash-title {
+            font-size: 2.5rem;
+            font-weight: 900;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.5rem;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .splash-target-green {
+            color: #006600;
+        }
+
+        .splash-target-red {
+            color: #bb0000;
+        }
+
+        .splash-target-black {
+            color: #000000;
         }
 
         @keyframes logo-entrance {
@@ -170,11 +201,26 @@
 <body class="min-h-screen">
     <!-- Splash Screen -->
     <div id="splash-screen">
-        <img src="{% static 'img/logo.png' %}" alt="Nyota Fund Logo" class="splash-logo">
+        <div class="splash-content">
+            <svg class="splash-star" viewBox="0 0 24 24" fill="currentColor">
+                <path
+                    d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z" />
+            </svg>
+            <h1 class="splash-title">
+                <span class="splash-target-black">NYOTA</span>
+                <span class="splash-target-red">FUND</span>
+            </h1>
+            <div class="flex gap-1">
+                <div class="w-8 h-1 bg-black"></div>
+                <div class="w-8 h-1 bg-[#bb0000]"></div>
+                <div class="w-8 h-1 bg-[#006600]"></div>
+            </div>
+        </div>
         <div class="loading-bar-container">
             <div class="loading-bar-progress"></div>
         </div>
-        <p class="mt-4 text-xs font-bold text-gray-400 uppercase tracking-widest animate-pulse">Initializing...</p>
+        <p class="mt-6 text-[10px] font-black text-gray-400 uppercase tracking-[0.3em] animate-pulse">Kenya's Youth
+            Empowerment</p>
     </div>
     <div
         class="max-w-md mx-auto min-h-screen relative flex flex-col bg-gradient-to-b from-white via-white to-green-50/30 shadow-xl">
