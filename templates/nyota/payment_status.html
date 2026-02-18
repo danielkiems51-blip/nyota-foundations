@@ -1,0 +1,161 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="animate-in fade-in duration-500 flex flex-col items-center py-10">
+    <div class="w-24 h-24 mb-10 relative">
+        <!-- Status Specific Icons -->
+        <div id="status-icon-pending" class="absolute inset-0 flex items-center justify-center">
+            <div class="w-24 h-24 border-8 border-gray-100 border-t-green-600 rounded-full animate-spin"></div>
+        </div>
+
+        <div id="status-icon-success"
+            class="absolute inset-0 hidden flex items-center justify-center bg-green-500 rounded-full scale-110 shadow-2xl shadow-green-200">
+            <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M5 13l4 4L19 7"></path>
+            </svg>
+        </div>
+
+        <div id="status-icon-failed"
+            class="absolute inset-0 hidden flex items-center justify-center bg-red-500 rounded-full scale-110 shadow-2xl shadow-red-200">
+            <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+        </div>
+    </div>
+
+    <h2 id="status-title" class="text-3xl font-black text-gray-900 mb-2">Processing Payment</h2>
+    <p id="status-desc" class="text-gray-500 font-bold mb-10 text-center px-8">We are waiting for your M-Pesa
+        confirmation. Enter your PIN on the prompt sent to your phone.</p>
+
+    <!-- Transaction Summary Card -->
+    <div class="w-full bg-white rounded-[32px] p-8 shadow-xl border border-gray-50 mb-8">
+        <div class="space-y-4">
+            <div class="flex justify-between items-center text-sm">
+                <span class="text-gray-400 font-bold uppercase tracking-widest text-[10px]">Reference</span>
+                <span class="text-gray-900 font-black">{{ transaction.reference }}</span>
+            </div>
+            <div class="flex justify-between items-center text-sm">
+                <span class="text-gray-400 font-bold uppercase tracking-widest text-[10px]">Recipient</span>
+                <span class="text-gray-900 font-black text-green-700">NYOTA FUND KE</span>
+            </div>
+            <div class="flex justify-between items-center text-sm">
+                <span class="text-gray-400 font-bold uppercase tracking-widest text-[10px]">Amount Paid</span>
+                <span class="text-gray-900 font-black">Ksh {{ transaction.amount|floatformat:0 }}</span>
+            </div>
+            <div class="flex justify-between items-center text-sm">
+                <span class="text-gray-400 font-bold uppercase tracking-widest text-[10px]">Loan Limit</span>
+                <span class="text-gray-900 font-black text-lg">Ksh {{ transaction.application.amount|floatformat:0
+                    }}</span>
+            </div>
+            <div class="pt-4 border-t border-gray-100 flex justify-between items-center">
+                <span class="text-gray-400 font-bold uppercase tracking-widest text-[10px]">Current State</span>
+                <span id="badge-status"
+                    class="bg-blue-50 text-blue-600 px-4 py-1.5 rounded-full text-[11px] font-black uppercase tracking-widest">PENDING</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Help / Actions -->
+    <div id="action-container" class="w-full space-y-4">
+        <p class="text-[11px] text-gray-400 text-center font-bold px-10 leading-relaxed uppercase tracking-tighter">
+            If you did not receive the prompt, please wait 30 seconds before trying again.
+        </p>
+
+        <a href="http://t.me/O722000000" target="_blank"
+            class="flex items-center justify-center gap-2 py-3 px-6 bg-[#0088cc]/10 text-[#0088cc] rounded-2xl font-black text-sm transition-all hover:bg-[#0088cc]/20">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                <path
+                    d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm5.891 8.146l-2.003 9.445c-.149.659-.538.822-1.088.508l-3.047-2.245-1.47 1.415c-.162.162-.299.299-.613.299l.218-3.102 5.645-5.1c.246-.219-.054-.341-.38-.125l-6.979 4.393-3.007-.939c-.652-.204-.666-.652.136-.965l11.741-4.524c.544-.204 1.019.124.846.84z" />
+            </svg>
+            Contact Support on Telegram
+        </a>
+
+        <div id="success-actions" class="hidden space-y-4">
+            <a href="{% url 'dashboard' %}"
+                class="w-full green-gradient-btn text-white py-5 rounded-3xl font-black text-xl shadow-xl flex items-center justify-center gap-3">
+                Go to Dashboard
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path>
+                </svg>
+            </a>
+            <p class="text-sm text-green-600 font-bold text-center">Your loan is being disbursed...</p>
+        </div>
+
+        <div id="failed-actions" class="hidden space-y-4">
+            <button onclick="window.location.reload()"
+                class="w-full bg-gray-900 text-white py-5 rounded-3xl font-black text-xl shadow-xl">
+                Try Again
+            </button>
+            <a href="{% url 'landing' %}" class="block text-center text-gray-400 font-bold text-sm">Cancel & Return</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const ref = "{{ transaction.reference }}";
+    let pollCount = 0;
+    const maxPolls = 60; // 5 minutes
+
+    const poll = setInterval(async () => {
+        pollCount++;
+        if (pollCount > maxPolls) {
+            clearInterval(poll);
+            updateUI('FAILED', 'Session Timeout');
+            return;
+        }
+
+        try {
+            const response = await fetch(`/api/payment-status/${ref}/`);
+            const data = await response.json();
+
+            if (data.status === 'SUCCESS') {
+                clearInterval(poll);
+                updateUI('SUCCESS');
+            } else if (data.status === 'FAILED') {
+                clearInterval(poll);
+                updateUI('FAILED');
+            }
+        } catch (e) {
+            console.error('Polling error', e);
+        }
+    }, 5000);
+
+    function updateUI(status, customMsg = null) {
+        const title = document.getElementById('status-title');
+        const desc = document.getElementById('status-desc');
+        const badge = document.getElementById('badge-status');
+
+        // Hide all icons
+        document.getElementById('status-icon-pending').classList.add('hidden');
+        document.getElementById('status-icon-success').classList.add('hidden');
+        document.getElementById('status-icon-failed').classList.add('hidden');
+
+        // Hide/Show action containers
+        document.getElementById('success-actions').classList.add('hidden');
+        document.getElementById('failed-actions').classList.add('hidden');
+
+        if (status === 'SUCCESS') {
+            title.innerText = 'Payment Successful!';
+            title.classList.add('text-green-600');
+            desc.innerText = 'Application fee received. Your loan is now in the disbursement queue.';
+            badge.innerText = 'SUCCESS';
+            badge.classList.remove('bg-blue-50', 'text-blue-600');
+            badge.classList.add('bg-green-50', 'text-green-600');
+            document.getElementById('status-icon-success').classList.remove('hidden');
+            document.getElementById('success-actions').classList.remove('hidden');
+        } else if (status === 'FAILED') {
+            title.innerText = 'Payment Failed';
+            title.classList.add('text-red-600');
+            desc.innerText = customMsg || 'The payment was not completed. Please check your balance and try again.';
+            badge.innerText = 'FAILED';
+            badge.classList.remove('bg-blue-50', 'text-blue-600');
+            badge.classList.add('bg-red-50', 'text-red-600');
+            document.getElementById('status-icon-failed').classList.remove('hidden');
+            document.getElementById('failed-actions').classList.remove('hidden');
+        }
+    }
+</script>
+{% endblock %}
