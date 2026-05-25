@@ -1,11 +1,12 @@
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from .services import PayheroService
-from .models import LoanApplication, Transaction
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
 import json
 import uuid
-from django.db import transaction as db_transaction
+import logging
+
+logger = logging.getLogger(__name__)
 
 def landing(request):
     limits = [
@@ -38,28 +39,15 @@ def initiate_payment(request):
             loan_amount = float(str(loan_amount).replace(',', ''))
             
             reference = str(uuid.uuid4())[:8].upper()
-            description = f"Nyota Fund Fee - {reference}"
+            description = f"Nyota Donation - {reference}"
             
-            with db_transaction.atomic():
-                # Create Loan Application record
-                application = LoanApplication.objects.create(
-                    full_name=full_name,
-                    phone_number=phone_number,
-                    county=county,
-                    reason=reason,
-                    amount=loan_amount,
-                    fee=fee_amount,
-                    status='PENDING'
-                )
-                
-                # Create Transaction record
-                payment_tx = Transaction.objects.create(
-                    application=application,
-                    reference=reference,
-                    amount=fee_amount,
-                    phone_number=phone_number,
-                    status='PENDING'
-                )
+            # Store details in session since we don't have a database
+            request.session['last_donation'] = {
+                'full_name': full_name,
+                'amount': fee_amount,
+                'reference': reference,
+                'status': 'PENDING'
+            }
             
             payhero = PayheroService()
             result = payhero.initiate_stk_push(
@@ -72,10 +60,11 @@ def initiate_payment(request):
             if result.get('success'):
                 # Store reference in session for tracking on status page
                 request.session['current_tx_ref'] = reference
-                # Update checkout request ID if returned
+                # Update session status if we have a checkout ID
+                donation_data = request.session.get('last_donation', {})
                 data_resp = result.get('data', {})
-                payment_tx.checkout_request_id = data_resp.get('CheckoutRequestID', '')
-                payment_tx.save()
+                donation_data['checkout_request_id'] = data_resp.get('CheckoutRequestID', '')
+                request.session['last_donation'] = donation_data
             
             return JsonResponse(result)
         except Exception as e:
@@ -84,11 +73,8 @@ def initiate_payment(request):
     return JsonResponse({'success': False, 'message': 'Invalid request method'})
 
 def dashboard(request):
-    """User dashboard showing loan status and data."""
-    # In a real app, this would be filtered by the logged-in user
-    # For now, we'll show the most recent applications as an example
-    applications = LoanApplication.objects.all().order_by('-created_at')[:5]
-    return render(request, 'nyota/dashboard.html', {'applications': applications})
+    """Placeholder dashboard for donation overview."""
+    return render(request, 'nyota/dashboard.html', {'message': 'Persistence disabled for donation mode.'})
 
 def offer_selection(request):
     """Enhanced offer selection page with dynamic slider logic."""
@@ -106,20 +92,21 @@ def offer_selection(request):
     return render(request, 'nyota/offer_selection.html', {'limits': limits})
 
 def payment_status(request):
-    """Payment status page with auto-refresh/polling logic."""
+    """Payment status page."""
     reference = request.GET.get('reference') or request.session.get('current_tx_ref')
     if not reference:
         return redirect('landing')
         
-    transaction = get_object_or_404(Transaction, reference=reference)
-    return render(request, 'nyota/payment_status.html', {'transaction': transaction})
+    # Use session data for display
+    donation = request.session.get('last_donation', {})
+    return render(request, 'nyota/payment_status.html', {'transaction': donation})
 
 def check_payment_status_api(request, reference):
-    """API endpoint for polling payment status."""
-    transaction = get_object_or_404(Transaction, reference=reference)
+    """API endpoint for polling payment status - simple placeholder."""
+    donation = request.session.get('last_donation', {})
     return JsonResponse({
-        'status': transaction.status,
-        'app_status': transaction.application.status
+        'status': donation.get('status', 'PENDING'),
+        'app_status': 'PROCESSING' if donation.get('status') == 'SUCCESS' else 'PENDING'
     })
 
 @csrf_exempt
@@ -139,27 +126,13 @@ def mpesa_callback(request):
             status_code = data.get('status_code') # 200 for success
             
             if reference:
-                try:
-                    with db_transaction.atomic():
-                        payment_tx = Transaction.objects.get(reference=reference)
-                        payment_tx.response_data = data
-                        
-                        if str(status_code) == "200":
-                            payment_tx.status = 'SUCCESS'
-                            # Update application as well
-                            app = payment_tx.application
-                            app.status = 'PROCESSING' # Moves to processing after payment
-                            app.save()
-                        else:
-                            payment_tx.status = 'FAILED'
-                        
-                        payment_tx.save()
-                except Transaction.DoesNotExist:
-                    print(f"Transaction with reference {reference} not found.")
+                status_msg = "SUCCESS" if str(status_code) == "200" else "FAILED"
+                logger.info(f"Donation callback for ref {reference}: {status_msg}")
+                # Note: In production, you would use a redis cache or similar for cross-process status
             
             return JsonResponse({'status': 'Received'})
         except Exception as e:
-            print(f"Callback error: {str(e)}")
+            logger.error(f"Callback error: {str(e)}")
             return JsonResponse({'status': 'Error', 'message': str(e)}, status=400)
             
     return JsonResponse({'status': 'Method not allowed'}, status=405)

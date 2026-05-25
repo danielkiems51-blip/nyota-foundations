@@ -24,6 +24,14 @@
         </div>
     </div>
 
+    <div class="w-24 h-24 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-8 animate-pulse">
+        <svg class="w-12 h-12 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+        </svg>
+    </div>
+    
+    <h2 class="text-3xl font-black text-gray-900 mb-4">Donation Status</h2>
+    <p class="text-gray-500 font-medium mb-10 px-6">Thank you for your generous contribution to youth empowerment.</p>
     <h2 id="status-title" class="text-3xl font-black text-gray-900 mb-2">Processing Payment</h2>
     <p id="status-desc" class="text-gray-500 font-bold mb-10 text-center px-8">We are waiting for your M-Pesa
         confirmation. Enter your PIN on the prompt sent to your phone.</p>
@@ -31,6 +39,14 @@
     <!-- Transaction Summary Card -->
     <div class="w-full bg-white rounded-[32px] p-8 shadow-xl border border-gray-50 mb-8">
         <div class="space-y-4">
+            <div class="flex justify-between items-center py-4 border-b border-gray-50">
+                <span class="text-gray-400 font-bold text-xs uppercase tracking-widest">Donation Amount</span>
+                <span class="text-green-700 font-black text-lg">Ksh {{ transaction.amount }}</span>
+            </div>
+            <div class="flex justify-between items-center py-4">
+                <span class="text-gray-400 font-bold text-xs uppercase tracking-widest">Reference</span>
+                <span class="text-gray-900 font-bold text-sm">{{ transaction.reference }}</span>
+            </div>
             <div class="flex justify-between items-center text-sm">
                 <span class="text-gray-400 font-bold uppercase tracking-widest text-[10px]">Reference</span>
                 <span class="text-gray-900 font-black">{{ transaction.reference }}</span>
